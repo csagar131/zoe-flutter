@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zoe/themes/app_colors.dart';
-import 'package:zoe/themes/app_text_styles.dart';
+import 'package:zoy/themes/app_text_styles.dart';
 
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton(
@@ -20,7 +19,7 @@ class PrimaryButton extends StatelessWidget {
         fixedSize:
             MaterialStateProperty.all<Size>(const Size(double.maxFinite, 50)),
         backgroundColor: MaterialStateProperty.all<Color>(
-            AppColors.primary), // Set the background color
+            Theme.of(context).colorScheme.primary), // Set the background color
         foregroundColor: MaterialStateProperty.all<Color>(
             Colors.white), // Set the font color
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -34,10 +33,12 @@ class PrimaryButton extends StatelessWidget {
         onPressedHandler();
       },
       child: isLoading
-          ? const CircularProgressIndicator()
+          ? const CircularProgressIndicator(
+              color: Colors.white,
+            )
           : Text(
               buttonText,
-              style: AppTextStyle.boldWhite16,
+              style: AppTextStyle.regularWhite16,
             ),
     );
   }

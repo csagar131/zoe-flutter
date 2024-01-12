@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:zoe/api/api_config.dart';
-import 'package:zoe/controllers/spinner.dart';
-import 'package:zoe/models/response_model.dart';
-import 'package:zoe/screens/auth_screens/user_login.dart';
-import 'package:zoe/themes/app_text_styles.dart';
-import 'package:zoe/widgets/authentication/enter_otp.dart';
-import 'package:zoe/widgets/core/buttons/primary_button.dart';
+import 'package:zoy/api/api_config.dart';
+import 'package:zoy/controllers/spinner.dart';
+import 'package:zoy/models/response_model.dart';
+import 'package:zoy/screens/auth_screens/user_login.dart';
+import 'package:zoy/themes/app_text_styles.dart';
+import 'package:zoy/widgets/authentication/enter_otp.dart';
+import 'package:zoy/widgets/core/buttons/primary_button.dart';
 
 class VerifyNumberSignupScreen extends StatefulWidget {
   const VerifyNumberSignupScreen({super.key});
@@ -45,7 +45,7 @@ class _VerifyNumberSignupScreenState extends State<VerifyNumberSignupScreen> {
       String errorMessage = 'An error occurred';
       errorMessage = ApiResponse.fromJson(e.response!.data).message;
 
-      if (context.mounted) {
+      if (context != null && context.mounted) {
         Get.snackbar(
           'Error',
           errorMessage,

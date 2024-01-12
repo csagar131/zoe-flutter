@@ -1,14 +1,11 @@
-import 'dart:convert';
-import 'package:dio/dio.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter/material.dart';
-import 'package:zoe/api/api_config.dart';
-import 'package:zoe/controllers/api_controllers/user_login.dart';
-import 'package:zoe/controllers/spinner.dart';
-import 'package:zoe/dummy_data.dart';
-import 'package:zoe/models/response_model.dart';
-import 'package:zoe/themes/app_text_styles.dart';
-import 'package:zoe/widgets/explore_widgets/swipe_card.dart';
+import 'package:zoy/controllers/api_controllers/request_controller.dart';
+import 'package:zoy/controllers/api_controllers/user_login.dart';
+import 'package:zoy/controllers/spinner.dart';
+import 'package:zoy/dummy_data.dart';
+import 'package:zoy/themes/app_text_styles.dart';
+import 'package:zoy/widgets/explore_widgets/swipe_card.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -41,6 +38,25 @@ class _ExplorePeopleScreenState extends State<ExplorePeopleScreen>
     super.dispose();
   }
 
+  void handleUpdateUserProfile(double latitude, double longitude) async {
+    await ApiRequestController().handleApiRequest(
+      showSpinner: false,
+      endpoint: '/account/user/update-profile',
+      method: HttpMethod.patch,
+      data: {
+        "longitude": longitude.toString(),
+        "latitude": latitude.toString(),
+        "min_radius": 2,
+        "max_radius": 5,
+        "min_age": 18,
+        "max_age": 25,
+      },
+      token: userController.loginApiResponse.data.token.toString(),
+      successCallback: getUsersProfile,
+      context: context,
+    );
+  }
+
   void getUserLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -68,94 +84,14 @@ class _ExplorePeopleScreenState extends State<ExplorePeopleScreen>
     handleUpdateUserProfile(position.latitude, position.longitude);
   }
 
-  void handleUpdateUserProfile(double latitude, double longitude) async {
-    try {
-      spinnerController.toggleSpinner();
-      final postData = json.encode({
-        "longitude": longitude.toString(),
-        "latitude": latitude.toString(),
-        "min_radius": 2,
-        "max_radius": 5,
-        "min_age": 18,
-        "max_age": 25,
-      });
-      final response = await dio.patch('/account/user/update-profile',
-          data: postData,
-          options: Options(headers: {
-            'Authorization':
-                'Token ${userController.loginApiResponse.data.token.toString()}'
-          }));
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        if (!context.mounted) {
-          return;
-        }
-        getUsersProfile();
-      }
-    } on DioException catch (e) {
-      String errorMessage = e.toString();
-      // errorMessage = ApiResponse.fromJson(e.response!.data).message;
-      if (context.mounted) {
-        Get.snackbar(
-          'Error',
-          errorMessage,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-          duration: const Duration(milliseconds: 2000),
-          margin: const EdgeInsets.all(15),
-        );
-      }
-    } finally {
-      spinnerController.toggleSpinner();
-    }
-  }
-
-  void getUsersProfile() async {
-    try {
-      spinnerController.toggleSpinner();
-
-      final response = await dio.get('/account/profile/listing',
-          options: Options(headers: {
-            'Authorization':
-                'Token ${userController.loginApiResponse.data.token.toString()}'
-          }));
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        if (!context.mounted) {
-          return;
-        }
-      }
-    } on DioException catch (e) {
-      String errorMessage = e.toString();
-      errorMessage = ApiResponse.fromJson(e.response!.data).message;
-      if (context.mounted) {
-        Get.snackbar(
-          'Error',
-          errorMessage,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-          duration: const Duration(milliseconds: 2000),
-          margin: const EdgeInsets.all(15),
-        );
-      }
-    } catch (e) {
-      String errorMessage = e.toString();
-      if (context.mounted) {
-        Get.snackbar(
-          'Error',
-          errorMessage,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-          duration: const Duration(milliseconds: 2000),
-          margin: const EdgeInsets.all(15),
-        );
-      }
-    } finally {
-      spinnerController.toggleSpinner();
-    }
+  void getUsersProfile(dynamic response) async {
+    await ApiRequestController().handleApiRequest(
+      showSpinner: true,
+      endpoint: '/account/profile/listing',
+      method: HttpMethod.get,
+      token: userController.loginApiResponse.data.token.toString(),
+      successCallback: (dynamic response) => {},
+    );
   }
 
   void handleOnEnd() {
@@ -169,26 +105,19 @@ class _ExplorePeopleScreenState extends State<ExplorePeopleScreen>
     SpinnerController spinnerController = Get.put(SpinnerController());
     return Scaffold(
       appBar: AppBar(
-        // actions: <Widget>[
-        //   PopupMenuButton<String>(
-        //     onSelected: (value) {
-        //       handlePopupMenuSelected(value);
-        //     },
-        //     itemBuilder: (BuildContext context) {
-        //       return {'Logout'}.map((String choice) {
-        //         return PopupMenuItem<String>(
-        //           value: choice,
-        //           child: Text(choice),
-        //         );
-        //       }).toList();
-        //     },
-        //   ),
-        // ],
         title: Text(
-          'ZOe',
+          'ZOy',
           style: AppTextStyle.boldPrimary18,
         ),
         backgroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_alt),
+            onPressed: () {
+              print('Filter button pressed');
+            },
+          ),
+        ],
         elevation: 0,
       ),
       body: Obx(
@@ -202,6 +131,8 @@ class _ExplorePeopleScreenState extends State<ExplorePeopleScreen>
                   height: double.infinity,
                   child: !isEndReached
                       ? CardSwiper(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 10),
                           isLoop: false,
                           onEnd: () {
                             handleOnEnd();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zoe/themes/app_text_styles.dart';
+import 'package:zoy/themes/app_text_styles.dart';
 
 class Profile extends StatelessWidget {
   final String firstName;
@@ -22,8 +22,8 @@ class Profile extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
                 border: Border.all(
-                  width: 2,
-                  color: Colors.blue,
+                  width: 1,
+                  color: Colors.grey,
                 ),
                 borderRadius: const BorderRadius.all(Radius.circular(55))),
             child: Stack(
@@ -36,12 +36,12 @@ class Profile extends StatelessWidget {
                       height: 108,
                       fit: BoxFit.cover,
                       image: const NetworkImage(
-                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRch6CDHA9hqbe3GbIo6O0T-EWeIL7JJ8_cpQ&usqp=CAU'),
+                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSay_7Jv-aXnExUdMP8aAG66UIiGzbjm_3p3w&usqp=CAU'),
                     ),
                   ),
                 ),
-                const Positioned(
-                    top: 80, left: 80, child: Icon(Icons.edit_square)),
+                // const Positioned(
+                //     top: 80, left: 80, child: Icon(Icons.edit_square)),
               ],
             ),
           ),
@@ -52,8 +52,8 @@ class Profile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                firstName,
-                style: AppTextStyle.boldBlack16,
+                firstName.toUpperCase(),
+                style: AppTextStyle.boldBlack20,
               ),
               Text(
                 '$age,$gender',

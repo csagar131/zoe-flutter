@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:zoy/themes/app_colors.dart';
 
 final ThemeData myTheme = ThemeData(
   useMaterial3: false,
   primarySwatch: Colors.blue,
-  buttonTheme: const ButtonThemeData(buttonColor: Colors.blue),
+  buttonTheme: const ButtonThemeData(buttonColor: Color(0xFF770646)),
   colorScheme: const ColorScheme(
     brightness: Brightness.light,
-    primary: Color(0xFF202020),
+    primary: AppColors.primary,
     onPrimary: Color(0xFF505050),
-    secondary: Color(0xFFBBBBBB),
+    secondary: AppColors.secondary,
     onSecondary: Color(0xFFEAEAEA),
     error: Color(0xFFF32424),
     onError: Color(0xFFF32424),

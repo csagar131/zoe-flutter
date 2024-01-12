@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:zoe/controllers/api_controllers/user_login.dart';
-import 'package:zoe/controllers/authentication.dart';
-import 'package:zoe/screens/auth_screens/user_login.dart';
-import 'package:zoe/themes/app_text_styles.dart';
-import 'package:zoe/utils/local_storage.dart';
-import 'package:zoe/widgets/core/buttons/secondary_button.dart';
-import 'package:zoe/widgets/user_profile/plan_card.dart';
-import 'package:zoe/widgets/user_profile/profile.dart';
+import 'package:zoy/controllers/api_controllers/user_login.dart';
+import 'package:zoy/controllers/authentication.dart';
+import 'package:zoy/screens/auth_screens/user_login.dart';
+import 'package:zoy/screens/edit_profile.dart';
+import 'package:zoy/themes/app_text_styles.dart';
+import 'package:zoy/utils/local_storage.dart';
+import 'package:zoy/widgets/core/buttons/secondary_button.dart';
+import 'package:zoy/widgets/user_profile/plan_card.dart';
+import 'package:zoy/widgets/user_profile/profile.dart';
 
 class UserProfileScreen extends StatelessWidget {
   UserProfileScreen({super.key});
@@ -25,7 +26,20 @@ class UserProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.edit_outlined,
+            ),
+            onPressed: () {
+              Get.to(() => const EditProfileScreen());
+            },
+          )
+        ],
+        title: Text(
+          'Profile',
+          style: AppTextStyle.boldPrimary18,
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -67,7 +81,7 @@ class UserProfileScreen extends StatelessWidget {
               Column(
                 children: [
                   Text(
-                    'Zoe',
+                    'zoy',
                     style: AppTextStyle.boldGrey18,
                   ),
                   const SizedBox(

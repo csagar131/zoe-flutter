@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:zoe/screens/home.dart';
-import 'package:zoe/screens/auth_screens/user_login.dart';
+import 'package:zoy/screens/home.dart';
+import 'package:zoy/screens/auth_screens/user_login.dart';
+import 'package:zoy/themes/app_text_styles.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -37,12 +38,36 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(color: Colors.black),
-      child: Image.network(
-        'https://cdn-icons-png.flaticon.com/128/5683/5683167.png?ga=GA1.1.167434193.1702374194&semt=ais',
-        fit: BoxFit.none,
-        width: double.infinity,
-        height: double.infinity,
+      height: double.infinity,
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: <Color>[Color(0xFFFF5BB8), Color(0xFF6E003F)],
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(
+            height: 150,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/splash_icon.png',
+                width: 50,
+                height: 50,
+              ),
+              Text(
+                'Zoy',
+                style: AppTextStyle.boldWhite16,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:zoe/screens/main_screens/explore_people.dart';
-import 'package:zoe/screens/main_screens/messages.dart';
-import 'package:zoe/screens/main_screens/user_profile.dart';
-import 'package:zoe/screens/main_screens/your_matches.dart';
+import 'package:zoy/screens/main_screens/explore_people.dart';
+import 'package:zoy/screens/main_screens/messages.dart';
+import 'package:zoy/screens/main_screens/user_profile.dart';
+import 'package:zoy/screens/main_screens/your_matches.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

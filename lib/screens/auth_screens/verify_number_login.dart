@@ -1,16 +1,14 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:zoe/api/api_config.dart';
-import 'package:zoe/controllers/api_controllers/user_login.dart';
-import 'package:zoe/controllers/authentication.dart';
-import 'package:zoe/controllers/spinner.dart';
-import 'package:zoe/models/login_model.dart';
-import 'package:zoe/models/response_model.dart';
-import 'package:zoe/screens/home.dart';
-import 'package:zoe/themes/app_text_styles.dart';
-import 'package:zoe/widgets/authentication/enter_otp.dart';
-import 'package:zoe/widgets/core/buttons/primary_button.dart';
+import 'package:zoy/controllers/api_controllers/request_controller.dart';
+import 'package:zoy/controllers/api_controllers/user_login.dart';
+import 'package:zoy/controllers/authentication.dart';
+import 'package:zoy/controllers/spinner.dart';
+import 'package:zoy/models/login_model.dart';
+import 'package:zoy/screens/home.dart';
+import 'package:zoy/themes/app_text_styles.dart';
+import 'package:zoy/widgets/authentication/enter_otp.dart';
+import 'package:zoy/widgets/core/buttons/primary_button.dart';
 
 class VerifyNumberLoginScreen extends StatefulWidget {
   const VerifyNumberLoginScreen({super.key});
@@ -24,6 +22,7 @@ class _VerifyNumberLoginScreenState extends State<VerifyNumberLoginScreen> {
   final SpinnerController spinnerController = Get.put(SpinnerController());
   final UserController userController = Get.put(UserController());
   final AuthController authController = Get.put(AuthController());
+  ApiRequestController apiRequestController = ApiRequestController();
 
   String inputOtp = '';
 
@@ -34,34 +33,17 @@ class _VerifyNumberLoginScreenState extends State<VerifyNumberLoginScreen> {
   }
 
   void handleLogin() async {
-    try {
-      final postData = {"phone": Get.arguments, "otp": inputOtp};
-      final response = await dio.post('/account/user/login', data: postData);
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        if (!context.mounted) {
-          return;
-        }
-        LoginApiResponse resData = LoginApiResponse.fromJson(response.data);
-        userController.updateData(resData);
-        authController.login();
-        Get.offAll(() => const HomeScreen());
-      }
-    } on DioException catch (e) {
-      String errorMessage = '';
-      errorMessage = ApiResponse.fromJson(e.response!.data).message;
-      if (context.mounted) {
-        Get.snackbar(
-          'Error',
-          errorMessage,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-          duration: const Duration(milliseconds: 2000),
-          margin: const EdgeInsets.all(15),
-        );
-      }
-    }
+    await apiRequestController.handleApiRequest(
+        endpoint: '/account/user/login',
+        token: '',
+        method: HttpMethod.post,
+        successCallback: (dynamic response) {
+          userController.updateData(LoginApiResponse.fromJson(response.data));
+          authController.login();
+          Get.offAll(() => const HomeScreen());
+        },
+        showSpinner: true,
+        data: {"phone": Get.arguments, "otp": inputOtp});
   }
 
   @override

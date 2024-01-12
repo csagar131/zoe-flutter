@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:zoe/themes/app_colors.dart';
+import 'package:zoy/themes/app_colors.dart';
 import 'app_dimens.dart';
 
 class AppTextStyle {

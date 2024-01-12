@@ -1,15 +1,14 @@
-import 'dart:convert';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:zoe/controllers/spinner.dart';
-import 'package:zoe/screens/auth_screens/user_login.dart';
-import 'package:zoe/screens/auth_screens/verify_number_signup.dart';
-import 'package:zoe/themes/app_colors.dart';
-import 'package:zoe/themes/app_text_styles.dart';
-import 'package:zoe/api/api_config.dart';
+import 'package:zoy/controllers/api_controllers/request_controller.dart';
+import 'package:zoy/controllers/spinner.dart';
+import 'package:zoy/screens/auth_screens/user_login.dart';
+import 'package:zoy/screens/auth_screens/verify_number_signup.dart';
+import 'package:zoy/themes/app_colors.dart';
+import 'package:zoy/themes/app_text_styles.dart';
+import 'package:zoy/widgets/core/buttons/primary_button.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -25,55 +24,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     SpinnerController spinnerController = Get.put(SpinnerController());
 
+    ApiRequestController apiRequestController = ApiRequestController();
+
     void createAccount() async {
-      spinnerController.toggleSpinner();
-      try {
-        if (formKey.currentState!.validate()) {
-          formKey.currentState!.save();
-
-          final postData = json.encode({
-            'first_name': formKey.currentState?.value['first_name'],
-            'last_name': formKey.currentState?.value['last_name'],
-            'gender': formKey.currentState?.value['gender'],
-            // 'dob': formKey.currentState?.value['dob'].value,
-            'dob': '1998-04-02',
-            'email': formKey.currentState?.value['email'],
-            'phone': formKey.currentState?.value['phone']
-          });
-
-          final response =
-              await dio.post('/account/user/signup', data: postData);
-
-          if (response.statusCode == 200 || response.statusCode == 201) {
-            if (!context.mounted) {
-              return;
-            }
-
-            Get.to(() => const VerifyNumberSignupScreen(),
-                arguments: formKey.currentState?.value['phone']);
-          }
-        }
-      } on DioException catch (e) {
-        String errorMessage = 'An error occurred';
-
-        // errorMessage = ApiResponse.fromJson(e.response!.data).message;
-
-        errorMessage =
-            e.response!.data['data'].entries.map((e) => e.value[0]).toList()[0];
-
-        if (context.mounted) {
-          Get.snackbar(
-            'Error',
-            errorMessage,
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.redAccent,
-            colorText: Colors.white,
-            duration: const Duration(milliseconds: 2000),
-            margin: const EdgeInsets.all(15),
-          );
-        }
-      } finally {
-        spinnerController.toggleSpinner();
+      if (formKey.currentState!.validate()) {
+        formKey.currentState!.save();
+        await apiRequestController.handleApiRequest(
+            endpoint: '/account/user/signup',
+            token: '',
+            method: HttpMethod.post,
+            successCallback: (dynamic response) => Get.to(
+                () => const VerifyNumberSignupScreen(),
+                arguments: formKey.currentState?.value['phone']),
+            showSpinner: true,
+            data: {
+              'first_name': formKey.currentState?.value['first_name'],
+              'last_name': formKey.currentState?.value['last_name'],
+              'gender': formKey.currentState?.value['gender'],
+              // 'dob': formKey.currentState?.value['dob'].value,
+              'dob': '1998-04-02',
+              'email': formKey.currentState?.value['email'],
+              'phone': formKey.currentState?.value['phone']
+            });
       }
     }
 
@@ -388,20 +360,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             height: 20,
                           ),
                           Obx(
-                            () => ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(double.infinity, 50),
-                                maximumSize: const Size(double.infinity, 50),
-                                backgroundColor: MaterialStateColor.resolveWith(
-                                    (states) => AppColors.primary),
-                              ),
-                              onPressed: createAccount,
-                              child: spinnerController.isLoading.value
-                                  ? const CircularProgressIndicator()
-                                  : Text(
-                                      'Create Account',
-                                      style: AppTextStyle.boldWhite16,
-                                    ),
+                            () => PrimaryButton(
+                              onPressedHandler: createAccount,
+                              isLoading: spinnerController.isLoading.value,
+                              buttonText: 'Create Account',
                             ),
                           ),
                           const SizedBox(
@@ -410,7 +372,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text('Already have account? '),
+                              const Text('Already have  account? '),
                               InkWell(
                                 onTap: () => Get.to(() => const LoginScreen()),
                                 child: Text(

@@ -1,12 +1,10 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:zoe/api/api_config.dart';
-import 'package:zoe/controllers/spinner.dart';
-import 'package:zoe/models/response_model.dart';
-import 'package:zoe/screens/auth_screens/user_signup.dart';
-import 'package:zoe/screens/auth_screens/verify_number_login.dart';
-import 'package:zoe/themes/app_text_styles.dart';
-import 'package:zoe/widgets/core/buttons/primary_button.dart';
+import 'package:zoy/controllers/api_controllers/request_controller.dart';
+import 'package:zoy/controllers/spinner.dart';
+import 'package:zoy/screens/auth_screens/user_signup.dart';
+import 'package:zoy/screens/auth_screens/verify_number_login.dart';
+import 'package:zoy/themes/app_text_styles.dart';
+import 'package:zoy/widgets/core/buttons/primary_button.dart';
 import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,6 +20,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String inputNumber = '';
 
   SpinnerController spinnerController = Get.put(SpinnerController());
+
+  ApiRequestController apiRequestController = ApiRequestController();
 
   dynamic validateMobile(String value) {
 // Indian Mobile number are of 10 digit only
@@ -40,43 +40,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void handleUserLogin() async {
     if (validateMobile(inputNumber) == null) {
-      try {
-        spinnerController.toggleSpinner();
-        final postData = {
-          "phone": inputNumber,
-        };
-
-        if (!context.mounted) {
-          return;
-        }
-
-        final response =
-            await dio.post('/account/user/pre-login', data: postData);
-
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          Get.to(() => const VerifyNumberLoginScreen(), arguments: inputNumber);
-        }
-      } on DioException catch (e) {
-        String errorMessage = 'An error occurred';
-
-        if (e.response?.statusCode != 404 && e.response?.statusCode != 500) {
-          errorMessage = ApiResponse.fromJson(e.response!.data).message;
-        }
-
-        if (context.mounted) {
-          Get.snackbar(
-            'Error',
-            errorMessage,
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.redAccent,
-            colorText: Colors.white,
-            duration: const Duration(milliseconds: 2000),
-            margin: const EdgeInsets.all(15),
-          );
-        }
-      } finally {
-        spinnerController.toggleSpinner();
-      }
+      await apiRequestController.handleApiRequest(
+          endpoint: '/account/user/pre-login',
+          data: {
+            "phone": inputNumber,
+          },
+          token: '',
+          method: HttpMethod.post,
+          successCallback: (dynamic response) => Get.to(
+              () => const VerifyNumberLoginScreen(),
+              arguments: inputNumber),
+          showSpinner: true);
     }
   }
 
@@ -88,10 +62,12 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Center(
         child: Container(
           decoration: const BoxDecoration(
-              image: DecorationImage(
-                  fit: BoxFit.contain,
-                  image: NetworkImage(
-                      'https://img.freepik.com/premium-photo/man-woman-sit-couch-with-hearts-heart-wall_863013-90793.jpg?w=1060'))),
+            image: DecorationImage(
+              fit: BoxFit.contain,
+              image: NetworkImage(
+                  'https://img.freepik.com/premium-photo/man-woman-sit-couch-with-hearts-heart-wall_863013-90793.jpg?w=1060'),
+            ),
+          ),
           child: SingleChildScrollView(
             child: Padding(
               padding:
@@ -197,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text('Dont have account? '),
+                              const Text("Don't have account? "),
                               InkWell(
                                 onTap: () => Get.to(() => const SignUpScreen()),
                                 child: Text(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zoe/themes/app_text_styles.dart';
-import 'package:zoe/widgets/core/buttons/secondary_button.dart';
+import 'package:zoy/themes/app_text_styles.dart';
+import 'package:zoy/widgets/core/buttons/secondary_button.dart';
 
 class PlanCard extends StatelessWidget {
   const PlanCard({super.key});
@@ -15,14 +15,7 @@ class PlanCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
-          gradient: const LinearGradient(
-            colors: [
-              Colors.blue,
-              Colors.lightBlue
-            ], // Customize your gradient colors
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: Theme.of(context).colorScheme.primary,
         ),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -31,14 +24,14 @@ class PlanCard extends StatelessWidget {
               children: [
                 Text(
                   'Premium',
-                  style: AppTextStyle.boldBlack18,
+                  style: AppTextStyle.boldWhite16,
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 Text(
                   'Unlock all of our features to be in complete control of you experience',
-                  style: AppTextStyle.mediumBlack14,
+                  style: AppTextStyle.mediumGrey14,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(

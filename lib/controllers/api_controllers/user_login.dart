@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:zoe/models/login_model.dart';
+import 'package:zoy/models/login_model.dart';
 
 class UserController extends GetxController {
   final _loginApiResponse = LoginApiResponse(

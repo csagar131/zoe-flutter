@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zoe/themes/app_text_styles.dart';
+import 'package:zoy/themes/app_text_styles.dart';
 
 class SwipeCard extends StatelessWidget {
   final String name;

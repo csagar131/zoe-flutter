@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:zoe/api/api_config.dart';
-import 'package:zoe/screens/splash.dart';
-import 'package:zoe/themes/theme.dart';
+import 'package:zoy/api/api_config.dart';
+import 'package:zoy/screens/splash.dart';
+import 'package:zoy/themes/theme.dart';
 import 'package:get_storage/get_storage.dart';
 
 void main() async {

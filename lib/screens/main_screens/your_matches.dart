@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zoe/themes/app_text_styles.dart';
-import 'package:zoe/widgets/core/buttons/secondary_button.dart';
+import 'package:zoy/themes/app_text_styles.dart';
+import 'package:zoy/widgets/core/buttons/secondary_button.dart';
 
 class YourMatchesScreen extends StatelessWidget {
   const YourMatchesScreen({super.key});
@@ -9,7 +9,10 @@ class YourMatchesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Likes'),
+        title: Text(
+          'Likes',
+          style: AppTextStyle.boldPrimary18,
+        ),
         elevation: 0,
         backgroundColor: Colors.white,
       ),
